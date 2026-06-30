@@ -33,7 +33,18 @@ document.getElementById('login')?.addEventListener('submit', async (e) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, senha })
   });
-
-  const data = await res.json();
+  //decisão de pagina
+    const data = await res.json();
   console.log(data);
+  if(res.ok){
+    localStorage.setItem("usuario", JSON.stringify(data.usuario));
+    
+    if(data.usuario.tipo_user==="treinador"){
+      window.location.href="/treinopaginaTreinador.html";
+    }else{
+      window.location.href="/paginaAluno.html";
+    }
+  }else{
+    document.getElementById("erroSenha").textContent=data.erro;
+  }
 });

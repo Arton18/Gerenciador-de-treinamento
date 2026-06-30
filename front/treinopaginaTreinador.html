@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Treinos do Professor</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .treino {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+
+    .treino h3 {
+      margin: 0;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .create-btn {
+      background: #28a745;
+    }
+
+    .create-btn:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Meus Treinos</h1>
+
+     <!-- Botão geral (opcional) -->
+    <a class="btn create-btn" href="CadastroTreino.html">
+      Criar Treino
+    </a>
+  </div>
+
+  <div id="listaTreinos"></div>
+<script>
+async function carregarTreinos() {
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    if (!usuario) {
+        alert("Loge primeiro");
+        window.location.href = "/login.html";
+        return;
+    }
+
+    const resposta = await fetch(`/api/treinos?treinador_id=${usuario.id}`);
+    const treinos = await resposta.json();
+
+    const lista = document.getElementById("listaTreinos");
+    lista.innerHTML = "";
+
+    for (const treino of treinos) {
+
+        // Busca os exercícios desse treino
+        const respostaExercicios = await fetch(`/api/exercicios?treino_id=${treino.treino_id}`);
+        const exercicios = await respostaExercicios.json();
+
+        let htmlExercicios = "";
+
+        if (exercicios.length > 0) {
+
+            exercicios.forEach(exercicio => {
+                htmlExercicios += `
+                    <li>
+                        <strong>${exercicio.titulo}</strong><br>
+                        ${exercicio.descricao}<br>
+                        <a href="${exercicio.video_url}" target="_blank">
+                            Ver vídeo
+                        </a>
+                    </li>
+                `;
+            });
+
+        } else {
+
+            htmlExercicios = "<li>Nenhum exercício cadastrado.</li>";
+
+        }
+
+        lista.innerHTML += `
+            <div class="treino">
+
+                <h3>${treino.titulo}</h3>
+
+                <p>${treino.descricao}</p>
+
+                <h4>Exercícios</h4>
+
+                <ul>
+                    ${htmlExercicios}
+                </ul>
+
+                <a class="btn"
+                   href="criar_exercicio.html?treino_id=${treino.treino_id}">
+                    Adicionar Exercício
+                </a>
+
+            </div>
+        `;
+    }
+}
+
+carregarTreinos();
+</script>
+</body>
+</html>

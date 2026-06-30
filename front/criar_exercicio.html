@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Criar Exercício</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      width: 100%;
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>Criar Novo Exercício</h2>
+
+ 
+  <form id="formExercicio">
+
+    <label for="titulo">Título</label>
+    <input type="text" id="titulo" required>
+
+    <label for="descricao">Descrição</label>
+    <textarea id="descricao" required></textarea>
+
+    <label for="video_url">URL do Vídeo</label>
+    <input type="url" id="video_url" required>
+
+    <button type="submit">Criar Exercício</button>
+
+  </form>
+
+<script>
+  const form = document.getElementById("formExercicio");
+
+  const params = new URLSearchParams(window.location.search);
+  const treinoId = params.get("treino_id");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // impede reload
+
+    const titulo = document.getElementById("titulo").value;
+    const descricao = document.getElementById("descricao").value;
+    const video_url = document.getElementById("video_url").value;
+
+    if (!treinoId) {
+      alert("Treino não encontrado na URL");
+      return;
+    }
+
+    try {
+      const resposta = await fetch("/api/exercicios", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          titulo,
+          descricao,
+          video_url,
+          treino_id: treinoId
+        })
+      });
+
+      if (resposta.ok) {
+        alert("Exercício criado com sucesso!");
+        window.location.href = "/treinopaginaTreinador.html";
+      } else {
+        const err = await resposta.text();
+        alert("Erro ao criar exercício: " + err);
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Erro de conexão com o servidor");
+    }
+  });
+</script>
+
+</body>
+</html>
