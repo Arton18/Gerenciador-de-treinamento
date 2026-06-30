@@ -45,12 +45,12 @@ router.post('/login',async(req,res)=>{
       [email] 
     );
     if(resultado.rows.length==0){
-      return res.status(400).json({erro:'Usuario não encontrado'});
+      return res.status(401).json({erro:'Usuario não encontrado'});
     }
     const usuario=resultado.rows[0];
     const senhaCorreta=await bcrypt.compare(senha,usuario.senha_hash);
     if(!senhaCorreta){
-      return res.status(400).json({erro:'Senha incorreta'});
+      return res.status(401).json({erro:'Senha incorreta'});
     }
     res.json({
       mensagem:'Login confirmado',
