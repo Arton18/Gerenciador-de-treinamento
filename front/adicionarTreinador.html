@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adicionar Treino ao Cronograma</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:500px;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+label{
+    font-weight:bold;
+}
+
+input,
+select{
+    width:100%;
+    padding:10px;
+    margin:10px 0 20px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#007bff;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#0056b3;
+}
+
+#listaTreinos{
+    margin-top:20px;
+}
+
+.treino{
+    border:1px solid #ddd;
+    padding:10px;
+    margin-top:10px;
+    border-radius:5px;
+}
+
+.treino h3{
+    margin-bottom:5px;
+}
+
+#btnEnviar{
+    margin-top:20px;
+    display:none;
+}
+
+#mensagem{
+    text-align:center;
+    margin-top:15px;
+    font-weight:bold;
+    color:green;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Adicionar Treino ao Cronograma</h1>
+
+<label>Código do treinador</label>
+
+<input
+type="number"
+id="codigo"
+placeholder="Digite o código do treinador">
+
+<label>Dia da semana</label>
+
+<select id="diaSemana">
+    <option value="">Selecione</option>
+    <option value="Segunda-feira">Segunda-feira</option>
+    <option value="Terça-feira">Terça-feira</option>
+    <option value="Quarta-feira">Quarta-feira</option>
+    <option value="Quinta-feira">Quinta-feira</option>
+    <option value="Sexta-feira">Sexta-feira</option>
+    <option value="Sábado">Sábado</option>
+    <option value="Domingo">Domingo</option>
+</select>
+
+<label>Horário</label>
+
+<input
+type="time"
+id="horario">
+
+<button onclick="buscarTreinos()">
+Buscar Treinos
+</button>
+
+<div id="listaTreinos"></div>
+
+<button id="btnEnviar" onclick="enviarTreino()">
+Enviar para o Cronograma
+</button>
+
+<button onclick="irParaCronograma()">
+    Ver Cronograma
+</button>
+
+<p id="mensagem"></p>
+
+</div>
+
+<script>
+
+let treinoSelecionado = null;
+
+async function buscarTreinos(){
+
+    const treinadorId = document.getElementById("codigo").value;
+
+    const resposta = await fetch(`/api/treinos?treinador_id=${treinadorId}`);
+
+    const treinos = await resposta.json();
+
+    const lista = document.getElementById("listaTreinos");
+
+    lista.innerHTML = "";
+
+    if(treinos.length === 0){
+
+        lista.innerHTML = "<p>Nenhum treino encontrado.</p>";
+        return;
+
+    }
+
+    treinos.forEach(treino=>{
+
+        lista.innerHTML += `
+            <div class="treino">
+
+                <input
+                type="radio"
+                name="treino"
+                value="${treino.treino_id}">
+
+                <h3>${treino.titulo}</h3>
+
+                <p>${treino.descricao}</p>
+
+            </div>
+        `;
+
+    });
+
+    document.getElementById("btnEnviar").style.display="block";
+
+}
+
+async function enviarTreino(){
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+    const radio = document.querySelector('input[name="treino"]:checked');
+
+    if(!radio){
+
+        alert("Selecione um treino.");
+        return;
+
+    }
+
+    if(document.getElementById("diaSemana").value === ""){
+
+        alert("Selecione o dia da semana.");
+        return;
+
+    }
+
+    if(document.getElementById("horario").value === ""){
+
+        alert("Selecione um horário.");
+        return;
+
+    }
+
+    treinoSelecionado = radio.value;
+
+    const resposta = await fetch("/api/aluno_treino",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            aluno_id: usuario.id,
+
+            treino_id: treinoSelecionado,
+
+            dia_semana: document.getElementById("diaSemana").value,
+
+            horario: document.getElementById("horario").value
+
+        })
+
+    });
+
+    const dados = await resposta.json();
+
+    document.getElementById("mensagem").innerHTML = dados.mensagem;
+
+}
+function irParaCronograma(){
+
+    window.location.href = "cronograma.html";
+}
+</script>
+
+</body>
+</html>

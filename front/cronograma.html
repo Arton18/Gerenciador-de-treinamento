@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Meu Cronograma</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+#cronograma{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    gap:15px;
+
+    align-items:start;
+
+}
+
+
+.dia{
+
+    background:white;
+
+    min-height:500px;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+
+}
+
+
+.dia h2{
+
+    text-align:center;
+
+    background:#007bff;
+
+    color:white;
+
+    padding:10px;
+
+    border-radius:5px;
+
+    font-size:18px;
+
+}
+
+
+.card{
+
+    background:#f8f8f8;
+
+    margin-top:15px;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    border:1px solid #ddd;
+
+}
+
+
+.exercicio{
+
+    background:white;
+
+    margin-top:10px;
+
+    padding:10px;
+
+    border-radius:5px;
+
+    border:1px solid #ddd;
+
+}
+
+.exercicio iframe{
+
+    margin-top:10px;
+
+    width:100%;
+
+    height:220px;
+
+    border:none;
+
+    border-radius:8px;
+
+}
+
+button{
+
+    width:100%;
+
+    margin-top:20px;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:#28a745;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+}
+
+button:hover{
+
+    background:#218838;
+
+}
+
+.info{
+
+    margin:8px 0;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Meu Cronograma</h1>
+
+<div id="cronograma"></div>
+
+<script>
+
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+async function carregarCronograma(){
+
+    const resposta = await fetch(`/api/aluno_treino?aluno_id=${usuario.id}`);
+
+    const cronograma = await resposta.json();
+
+    const div = document.getElementById("cronograma");
+
+    div.innerHTML="";
+const dias = [
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+	"Sábado",
+	"Domingo"
+];
+
+
+dias.forEach(dia=>{
+
+    div.innerHTML += `
+
+        <div class="dia" id="${dia}">
+
+            <h2>${dia}</h2>
+
+        </div>
+
+    `;
+
+});
+
+    if(cronograma.length===0){
+
+    
+
+        return;
+
+    }
+
+    for(const treino of cronograma){
+
+        const respostaExercicios =
+        await fetch(`/api/exercicios?treino_id=${treino.treino_id}`);
+
+        const exercicios =
+        await respostaExercicios.json();
+
+        let htmlExercicios="";
+
+        exercicios.forEach(exercicio=>{
+
+          let video = "";
+
+if(exercicio.video_url){
+
+    video = `
+        <a
+            href="${exercicio.video_url}"
+            target="_blank">
+
+            ▶ Assistir vídeo
+
+        </a>
+    `;
+
+}
+
+            htmlExercicios += `
+
+                <div class="exercicio">
+
+                    <strong>${exercicio.titulo}</strong>
+
+                    <p>${exercicio.descricao}</p>
+
+                    ${video}
+
+                </div>
+
+            `;
+
+        });
+
+        document.getElementById(treino.dia_semana).innerHTML += `
+
+            <div class="card">
+
+                <h2>${treino.titulo}</h2>
+
+                <p>${treino.descricao}</p>
+
+                <p class="info">
+
+                    <strong>Dia:</strong>
+
+                    ${treino.dia_semana}
+
+                </p>
+
+                <p class="info">
+
+                    <strong>Horário:</strong>
+
+                    ${treino.horario}
+
+                </p>
+
+                <h3>Exercícios</h3>
+
+                ${htmlExercicios}
+
+                <button
+                onclick="concluirTreino(${treino.treino_id})">
+
+                    Concluir Treino
+
+                </button>
+		<button
+		onclick="excluirTreino(${treino.id})"
+		style="background:#dc3545; margin-top:10px;">
+
+		Excluir Treino
+
+</button>
+
+            </div>
+
+        `;
+
+    }
+
+}
+async function excluirTreino(id){
+
+    if(!confirm("Deseja realmente excluir este treino?")){
+
+        return;
+
+    }
+
+    const resposta = await fetch(`/api/aluno_treino/${id}`,{
+
+        method:"DELETE"
+
+    });
+
+    const dados = await resposta.json();
+
+    alert(dados.mensagem);
+
+    carregarCronograma();
+
+}
+
+async function concluirTreino(treino_id){
+
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+
+    let tempo = prompt(
+        "Quantos minutos durou o treino?"
+    );
+
+
+    let calorias = prompt(
+        "Quantas calorias gastou?"
+    );
+
+
+    const resposta = await fetch("/api/historico_treino",{
+
+
+        method:"POST",
+
+
+        headers:{
+
+            "Content-Type":"application/json"
+
+        },
+
+
+        body:JSON.stringify({
+
+            aluno_id:usuario.id,
+
+            treino_id:treino_id,
+
+            tempo_minutos:Number(tempo),
+
+            calorias:Number(calorias)
+
+        })
+
+
+    });
+
+
+    const dados = await resposta.json();
+
+
+    alert(dados.mensagem);
+
+
+}
+
+carregarCronograma();
+
+</script>
+
+</body>
+</html>
