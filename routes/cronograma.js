@@ -2,6 +2,26 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../bd');
 const bcrypt = require('bcrypt');
+//vincular aluno ao treinador
+router.post('/aluno_treinador',async(req, res)=>{
+    try{
+        const{aluno_id, treinador_id}=req.body;
+        await pool.query(
+            `INSERT INTO aluno_treinador
+            (aluno_id,treinador_id)
+            VALUES ($1,$2)
+            ON CONFLICT DO NOTHING`,
+        [aluno_id,treinador_id]);
+        res.json({
+            mensagem:"Treinador vinculado"
+        });
+    }catch (erro){
+        res.status(500).json({
+            erro:erro.message
+        });
+    }
+
+});
 //adicionar treino ao cronograma
 router.post('/aluno_treino',async(req,res)=>{
     
@@ -135,4 +155,5 @@ router.post('/historico_treino', async(req,res)=>{
         });
     }
 });
+
 module.exports = router;

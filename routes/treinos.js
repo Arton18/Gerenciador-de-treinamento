@@ -31,4 +31,37 @@ router.get('/treinos',async(req,res)=>{
         res.status(500).json({erro:erro.message})
     }
 });
+///excluir treinos
+router.delete("/treinos/:id", async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+         // Apaga os exercícios do treino necessario para o banco permitir a exclusão do treino
+        await pool.query(
+            `DELETE FROM exercicios
+             WHERE treino_id = $1`,
+            [id]
+        );
+
+        // apaga o treino
+
+        await pool.query(
+            `DELETE FROM treinos
+             WHERE treino_id = $1`,
+            [id]
+        );
+
+        res.json({
+            mensagem: "Treino excluído com sucesso."
+        });
+
+    } catch (erro) {
+
+        res.status(500).json({
+            erro: erro.message
+        });
+
+    }
+});
 module.exports = router;
