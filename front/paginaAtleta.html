@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Aluno</title>
+    <title>Área do Atleta</title>
 
     <style>
         *{
@@ -68,6 +68,10 @@
             <button onclick="abrirCronograma()">
                 Cronograma
             </button>
+
+	<button onclick="abrirGrafico()">
+                Grafico
+            </button>
         </div>
     </div>
 
@@ -78,6 +82,10 @@
 
         function abrirCronograma() {
             window.location.href = "cronograma.html";
+        }
+
+	function abrirGrafico() {
+            window.location.href = "graficoAtleta.html";
         }
     </script>
 

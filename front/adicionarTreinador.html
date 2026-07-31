@@ -144,8 +144,19 @@ Enviar para o Cronograma
 let treinoSelecionado = null;
 
 async function buscarTreinos(){
+    const usuario= JSON.parse(localStorage.getItem("usuario"));
 
     const treinadorId = document.getElementById("codigo").value;
+ await fetch("/api/aluno_treinador", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        aluno_id: usuario.id,
+        treinador_id: treinadorId
+    })
+});
 
     const resposta = await fetch(`/api/treinos?treinador_id=${treinadorId}`);
 

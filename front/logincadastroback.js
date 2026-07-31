@@ -42,7 +42,7 @@ document.getElementById('login')?.addEventListener('submit', async (e) => {
     if(data.usuario.tipo_user==="treinador"){
       window.location.href="/treinopaginaTreinador.html";
     }else{
-      window.location.href="/paginaAluno.html";
+      window.location.href="/paginaAtleta.html";
     }
   }else{
     document.getElementById("erroSenha").textContent=data.erro;

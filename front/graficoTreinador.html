@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<meta charset="UTF-8">
+<title>Meus Alunos</title>
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f4f4;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+table{
+    width:100%;
+    max-width:900px;
+    margin:auto;
+    background:white;
+    border-collapse:collapse;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+th, td{
+    padding:15px;
+    border-bottom:1px solid #ddd;
+    text-align:center; /* Centraliza nome, email e botão */
+}
+
+th{
+    background:#007bff;
+    color:white;
+}
+
+tr:hover{
+    background:#f8f8f8;
+}
+
+button{
+    padding:8px 18px;
+    border:none;
+    border-radius:5px;
+    background:#28a745;   /* Verde */
+    color:white;
+    cursor:pointer;
+    font-size:15px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#218838;   /* Verde mais escuro */
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Meus Alunos</h1>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Nome</th>
+<th>Email</th>
+<th></th>
+
+</tr>
+
+</thead>
+
+<tbody id="listaAlunos">
+
+</tbody>
+
+</table>
+
+<script>
+
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+async function carregarAlunos(){
+
+    const resposta = await fetch(`/api/informacao/treinador/${usuario.id}/alunos`);
+
+    const alunos = await resposta.json();
+
+    const tabela = document.getElementById("listaAlunos");
+
+    tabela.innerHTML="";
+
+    alunos.forEach(aluno=>{
+
+        tabela.innerHTML += `
+        <tr>
+
+            <td>${aluno.nome}</td>
+
+            <td>${aluno.email}</td>
+
+            <td>
+
+                <button onclick="abrirGrafico(${aluno.user_id})">
+                    Ver gráfico
+                </button>
+
+            </td>
+
+        </tr>
+        `;
+
+    });
+
+}
+
+function abrirGrafico(id){
+
+    window.location.href=`graficoAlunoTreinador.html?aluno=${id}`;
+
+}
+
+carregarAlunos();
+
+</script>
+
+</body>
+</html>

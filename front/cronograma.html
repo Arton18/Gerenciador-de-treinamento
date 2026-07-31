@@ -155,10 +155,13 @@ button:hover{
 <body>
 
 <h1>Meu Cronograma</h1>
-
+<button onclick="irParaPGAtleta()" class="voltar">
+    Voltar ao Início
+</button>
 <div id="cronograma"></div>
 
 <script>
+
 
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 
@@ -290,9 +293,11 @@ if(exercicio.video_url){
 
 </button>
 
+
             </div>
 
-        `;
+
+       `;
 
     }
 
@@ -371,7 +376,10 @@ async function concluirTreino(treino_id){
 
 
 }
+function irParaPGAtleta(){
 
+    window.location.href = "paginaAtleta.html";
+}
 carregarCronograma();
 
 </script>
