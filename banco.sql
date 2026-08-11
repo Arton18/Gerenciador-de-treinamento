@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict h3gCA4IKh2baRbyz91ovjC5wHmjSyMMvnAK2d8wsSGEtf5RZRNOIPICID2cWHIE
+\restrict JXzaNMr3bHsUzfFDvHPmUqjQUHaWrP7pK1uhr2MIRmyHOEdza4qBtu65mE1GLdU
 
 -- Dumped from database version 18.4
 -- Dumped by pg_dump version 18.4
@@ -194,7 +194,9 @@ CREATE TABLE public.usuarios (
     nome character varying(100) NOT NULL,
     email character varying(150) NOT NULL,
     senha_hash text NOT NULL,
-    tipo_user character varying(20) NOT NULL
+    tipo_user character varying(20) NOT NULL,
+    email_verificado boolean DEFAULT false,
+    tokem_verifica character varying(255)
 );
 
 
@@ -319,9 +321,10 @@ COPY public.treinos (treino_id, titulo, descricao, treinador_id) FROM stdin;
 -- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.usuarios (user_id, nome, email, senha_hash, tipo_user) FROM stdin;
-1	teste1	teste1@gmail.com	$2b$10$7FZiLd3xc/72r/5Jc0t5dOL8ert0jIEQcaIn8F0pxn54f1146aMQ6	aluno
-2	treinador00	teste2@gmail.com	$2b$10$32oIgqkVXGmyMe1/vL4jp.IZFm5oUPSUk2UbtIzZNQtUggpfVkCIe	treinador
+COPY public.usuarios (user_id, nome, email, senha_hash, tipo_user, email_verificado, tokem_verifica) FROM stdin;
+1	teste1	teste1@gmail.com	$2b$10$7FZiLd3xc/72r/5Jc0t5dOL8ert0jIEQcaIn8F0pxn54f1146aMQ6	aluno	t	\N
+2	treinador00	teste2@gmail.com	$2b$10$32oIgqkVXGmyMe1/vL4jp.IZFm5oUPSUk2UbtIzZNQtUggpfVkCIe	treinador	t	\N
+3	arton	artondelima123@gmail.com	$2b$10$/rudRII7aNYW9j7f5T48ZOFcvq3aUCSfEhkw0wYmkRyT3/GwwEzrm	treinador	t	\N
 \.
 
 
@@ -357,7 +360,7 @@ SELECT pg_catalog.setval('public.treinos_treino_id_seq', 6, true);
 -- Name: usuarios_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.usuarios_user_id_seq', 2, true);
+SELECT pg_catalog.setval('public.usuarios_user_id_seq', 3, true);
 
 
 --
@@ -500,5 +503,5 @@ ALTER TABLE ONLY public.treinos
 -- PostgreSQL database dump complete
 --
 
-\unrestrict h3gCA4IKh2baRbyz91ovjC5wHmjSyMMvnAK2d8wsSGEtf5RZRNOIPICID2cWHIE
+\unrestrict JXzaNMr3bHsUzfFDvHPmUqjQUHaWrP7pK1uhr2MIRmyHOEdza4qBtu65mE1GLdU
 
