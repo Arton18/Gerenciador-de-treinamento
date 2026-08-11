@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gerenciador de Treinamento</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            background: #f4f4f4;
+
+            padding: 20px;
+        }
+
+        .container {
+            width: min(90vw, 450px);
+
+            background: white;
+
+            padding: clamp(25px, 5vw, 45px);
+
+            border-radius: 15px;
+
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(24px, 5vw, 36px);
+
+            margin-bottom: 10px;
+
+            color: #333;
+        }
+
+        p {
+            font-size: clamp(14px, 3vw, 18px);
+
+            color: #666;
+
+            margin-bottom: 30px;
+        }
+
+        .botoes {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 15px;
+
+            width: 100%;
+        }
+
+        .botao {
+            width: 100%;
+
+            min-height: 50px;
+
+            padding: 12px 20px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: clamp(16px, 3vw, 20px);
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            transition: 0.2s;
+        }
+
+        .botao-cadastrar {
+            background: #28a745;
+
+            color: white;
+        }
+
+        .botao-cadastrar:hover {
+            background: #218838;
+        }
+
+        .botao-login {
+            background: #007bff;
+
+            color: white;
+        }
+
+        .botao-login:hover {
+            background: #0056b3;
+        }
+
+        /* Telas pequenas */
+
+        @media (max-width: 400px) {
+
+            .container {
+                width: 100%;
+                padding: 25px 20px;
+            }
+
+            .botao {
+                min-height: 48px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="container">
+
+        <h1>Gerenciador de Treinamento</h1>
+
+        <p>
+            Escolha uma opção para continuar
+        </p>
+
+        <div class="botoes">
+
+            <a
+                href="/cadastro.html"
+                class="botao botao-cadastrar">
+
+                Cadastrar
+
+            </a>
+
+            <a
+                href="/login.html"
+                class="botao botao-login">
+
+                Login
+
+            </a>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
+

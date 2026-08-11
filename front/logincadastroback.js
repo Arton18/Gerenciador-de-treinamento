@@ -13,12 +13,23 @@ document.getElementById('cadastro')?.addEventListener('submit', async (e) => {
     document.getElementById('erroSenha').textContent = 'Senhas diferentes';
     return;
   }
-
-  await fetch('/api/cadastro', {
+  try{ 
+    const res= await fetch('/api/cadastro', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nome, email, senha, tipo_user })
   });
+  const data=await res.json();
+  if (res.ok){
+    alert("Cadastro realizado com sucesso,verifique seu e-mail para confirmar sua conta");
+    window.location.href="/login.html"
+  }else{alert(data.erro);}
+  }catch(erro){
+    console.error("Erro",erro)
+    alert("não foi possivel efetuar o cadastro")
+  }
+
+ 
 });
 
 // LOGIN
